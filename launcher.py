@@ -31,7 +31,7 @@ def get_system_info():
 
 def run_fzf(options):
     fzf_command = (
-        "fzf --header-lines=0 "
+        "fzf --header-lines=0 --no-info "
         "--preview 'while true; echo \"$(cat /tmp/launcher_top_bar)\"; sleep 0.5; end' "
         "--preview-window=up:1:follow:wrap:noinfo"
     )

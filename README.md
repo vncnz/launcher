@@ -21,10 +21,10 @@ This is my quick and dirty fzf based keyboard application launcher, dashboard, a
  - Customize the entries in your dashboard using ~/.config/launcher.json it should look this way:
  ```
  [
- 		{
-   			"name": "name of the entry",
-      	"exec": "command to execute"
-    }
+ 	{
+ 		"name": "name of the entry",
+      		"exec": "command to execute"
+    	}
  ]
  ```
  - The launcher starts in normal mode. You can switch to dashboard mode by selecting the entry `:d`, using `:w` will switch you to window mode

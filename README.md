@@ -1,12 +1,29 @@
 # Launcher
 This is my quick and dirty fzf based keyboard application launcher, dashboard, and window switcher. It was designed to work with the niri wayland compositor.
 
+## Features:
+ - Fuzzy finding applications and launching them
+ - Customization of dashboard commands, like network management, bluetooth, or a system monitor. Anything goes that has a shell or a TUI
+ - Status in the launcher instead of a seperate bar, (eg: volume, battery, backlight or keyboard language)
+ - Window switching in niri
+
+### Normal mode:
+![image](https://github.com/user-attachments/assets/e6cb6053-d83e-4861-a44b-1a7244e94dec)
+
+### Dashboard mode:
+![image](https://github.com/user-attachments/assets/ff06e4b8-7934-4751-a369-c6e6b1e7b8fa)
+
+### Window mode:
+![image](https://github.com/user-attachments/assets/7f59e193-4eb1-40f6-922b-1adbe0f84d8e)
+
+
 ## Requirements:
  - niri, window switching and keyboard language display depend on the niri compositor and use `niri msg`
  - alacritty, alacritty is used as the terminal emulator and is started by `start.py` with the launcher running (you _could_ use another terminal emulator, but you will need to change `start.py`)
  - pactl, for displaying the volume
  - python-psutil, for showing battery information in the header bar
  - fzf, for the whole program to even work
+ - nerdfont, to display the icons in the status bar correctly
 
 ## How to use:
  -  Add the following rule to your niri config file:

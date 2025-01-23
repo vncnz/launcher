@@ -11,28 +11,59 @@ current_mode = "normal"
 username = os.getlogin()
 launcher_config = f"/home/{username}/.config/launcher.json"
 
+COLOR_OK = (145, 238, 145)
+COLOR_WARN = (255, 166, 0)
+COLOR_ERR = (255, 0, 0)
+COLOR_SOFT_RED = (248, 112, 112)
+COLOR_AZURE = (97, 175, 191)
+
+def classToColor (cl):
+    if not cl: return (255, 255, 255)
+    if cl == "ok-color": return COLOR_OK
+    if cl == "warn-color": return COLOR_WARN
+    if cl == "err-color": return COLOR_ERR
+    if cl == "azure-color": return COLOR_AZURE
+    # if cl == "fully": return (255, 255, 255)
+    if cl == "nodata-color": return COLOR_SOFT_RED
+    return (128, 128, 128)
+
+def getColorCode (r, g, b):
+    return f"\033[38;2;{r};{g};{b}m"
+endColorCode = "\033[0m"
+
+def colorize (txt, c):
+    c0 = getColorCode(*c)
+    return f"{c0}{txt}{endColorCode}"
+
 # Function to get system info
 def get_system_info():
+    time_now = time.strftime("%Y-%m-%d %H:%M:%S")
+    brightness = system.get_brightness()
+    # volume = system.get_volume()
+    vol = system.get_volume_info()
+    percentage, plugged, remaining = system.get_battery_state()
+    remaining = f"󱧥 {time.strftime('%H:%M:%S', time.gmtime(remaining))}" if not remaining == -2 else ''
+    charging = '󰚥' if plugged else '󰚦'
+    keyboard_layout = system.get_keyboard()
+    #keyboard_layout = subprocess.getoutput("setxkbmap -query | grep layout | awk '{print $2}'")
+
+    top_bar = f"󰥔 {time_now} | 󰌌 {keyboard_layout} | {vol['icon']} {vol['value']}%"
+    if brightness is not None: tob_bar += f" | 󰃟 {brightness}%"
+    if percentage: top_bar += f"| 󱐋 {percentage}% {remaining} {charging} "
+    top_bar += " | " + colorize("Prova", (150,180,160))
+    # top_bar += "\033[48;2;200;10;40mProva" # 48 per lo sfondo
+    with open("/tmp/launcher_top_bar", "w") as f:
+        f.write(top_bar)
+
+def get_system_info_cycle():
     while True:
-        time_now = time.strftime("%Y-%m-%d %H:%M:%S")
-        brightness = system.get_brightness()
-        volume = system.get_volume()
-        percentage, plugged, remaining = system.get_battery_state()
-        remaining = f"󱧥 {time.strftime('%H:%M:%S', time.gmtime(remaining))}" if not remaining == -2 else ''
-        charging = '󰚥' if plugged else '󰚦'
-        keyboard_layout = system.get_keyboard()
-        #keyboard_layout = subprocess.getoutput("setxkbmap -query | grep layout | awk '{print $2}'")
-
-        top_bar = f"󰥔 {time_now} | 󰃟 {brightness}% | 󰌌 {keyboard_layout} |  {volume}% | 󱐋 {percentage}% {remaining} {charging} "
-        with open("/tmp/launcher_top_bar", "w") as f:
-            f.write(top_bar)
-
+        get_system_info()
         time.sleep(0.5)
 
 def run_fzf(options):
     fzf_command = (
         "fzf --header-lines=0 --no-info "
-        "--preview 'while true; echo \"$(cat /tmp/launcher_top_bar)\"; sleep 0.5; end' "
+        "--preview 'while true; do echo \"$(cat /tmp/launcher_top_bar)\"; sleep 0.5; done;' "
         "--preview-window=up:1:follow:wrap:noinfo"
     )
     fzf_input = "\n".join(options)
@@ -149,9 +180,13 @@ def dashboard_mode():
         subprocess.run(exec_map[selection], shell=True)
         dashboard_mode()
 
-# Start system info updater thread
-threading.Thread(target=get_system_info, daemon=True).start()
+if False:
+    # Start system info updater thread
+    threading.Thread(target=get_system_info_cycle, daemon=True).start()
 
-# Start in normal mode
-normal_mode()
-
+    # Start in normal mode
+    normal_mode()
+else:
+    get_system_info()
+    with open("/tmp/launcher_top_bar", "r") as f:
+        print(f.readline())

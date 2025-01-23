@@ -2,6 +2,12 @@ import subprocess
 import os
 import glob
 import psutil
+import json
+
+def get_volume_info ():
+    result = subprocess.run([f'/home/{os.getlogin()}/.config/eww/scripts/volume.sh', 'json'], stdout=subprocess.PIPE)
+    output = result.stdout.decode()
+    return json.loads(output)
 
 def get_volume():
     result = subprocess.run(['pactl', 'get-sink-volume', '@DEFAULT_SINK@'], stdout=subprocess.PIPE)
@@ -17,7 +23,7 @@ def get_brightness():
     # Find the correct backlight path
     backlight_paths = glob.glob('/sys/class/backlight/*/brightness')
     if not backlight_paths:
-        print("No backlight path found")
+        # print("No backlight path found")
         return None
 
     brightness_path = backlight_paths[0]

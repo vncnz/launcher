@@ -4,6 +4,11 @@ import glob
 import psutil
 import json
 
+def get_meteo_info ():
+    result = subprocess.run([f'/home/{os.getlogin()}/.config/eww/scripts/meteo.sh', 'Desenzano Del Garda', '45.457692', '10.570684'], stdout=subprocess.PIPE)
+    output = result.stdout.decode()
+    return json.loads(output)
+
 def get_volume_info ():
     result = subprocess.run([f'/home/{os.getlogin()}/.config/eww/scripts/volume.sh', 'json'], stdout=subprocess.PIPE)
     output = result.stdout.decode()

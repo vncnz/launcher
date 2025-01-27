@@ -51,6 +51,14 @@ def get_system_info():
     if brightness is not None: tob_bar += f" | 󰃟 {brightness}%"
     if percentage: top_bar += f"| 󱐋 {percentage}% {remaining} {charging} "
     top_bar += " | " + colorize("Prova", (150,180,160))
+
+    met = system.get_meteo_info()
+    color = (255, 255, 255)
+    if met['text'][0] in ['C', 'M']: color = (253, 231, 76)
+    elif met['text'][0] == 'R': color = (65, 171, 251)
+    elif met['text'][0] == 'P': color = (128, 128, 128)
+    top_bar += f' | {colorize(met['icon'] or met['text'], color)} {met['temp']}{met['temp_unit']}'
+
     # top_bar += "\033[48;2;200;10;40mProva" # 48 per lo sfondo
     with open("/tmp/launcher_top_bar", "w") as f:
         f.write(top_bar)

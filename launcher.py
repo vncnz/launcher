@@ -37,12 +37,12 @@ def colorize (txt, c):
 
 # Function to get system info
 def get_system_info():
-    time_now = time.strftime("%Y-%m-%d %H:%M:%S")
+    time_now = time.strftime("%Y-%m-%d %H:%M")
     brightness = system.get_brightness()
     # volume = system.get_volume()
     vol = system.get_volume_info()
     percentage, plugged, remaining = system.get_battery_state()
-    remaining = f"󱧥 {time.strftime('%H:%M:%S', time.gmtime(remaining))}" if not remaining == -2 else ''
+    remaining = f"󱧥 {time.strftime('%H:%M', time.gmtime(remaining))}" if not remaining == -2 else ''
     charging = '󰚥' if plugged else '󰚦'
     keyboard_layout = system.get_keyboard()
     #keyboard_layout = subprocess.getoutput("setxkbmap -query | grep layout | awk '{print $2}'")
@@ -50,7 +50,7 @@ def get_system_info():
     top_bar = f"󰥔 {time_now} | 󰌌 {keyboard_layout} | {vol['icon']} {vol['value']}%"
     if brightness is not None: tob_bar += f" | 󰃟 {brightness}%"
     if percentage: top_bar += f"| 󱐋 {percentage}% {remaining} {charging} "
-    top_bar += " | " + colorize("Prova", (150,180,160))
+    # top_bar += " | " + colorize("Prova", (150,180,160))
 
     met = system.get_meteo_info()
     color = (255, 255, 255)

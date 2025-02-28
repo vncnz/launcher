@@ -31,9 +31,9 @@ def getColorCode (r, g, b):
     return f"\033[38;2;{r};{g};{b}m"
 endColorCode = "\033[0m"
 
-def colorize (txt, c):
+def colorize (txt, c, bold = False):
     c0 = getColorCode(*c)
-    return f"{c0}{txt}{endColorCode}"
+    return f"{bold and '\033[1m' or ''} {c0}{txt}{endColorCode}"
 
 # Function to get system info
 def get_system_info():
@@ -57,7 +57,8 @@ def get_system_info():
     if met['text'][0] in ['C', 'M']: color = (253, 231, 76)
     elif met['text'][0] == 'R': color = (65, 171, 251)
     elif met['text'][0] == 'P': color = (128, 128, 128)
-    top_bar += f' | {colorize(met['icon'] or met['text'], color)} {met['temp']}{met['temp_unit']}'
+    top_bar += f' | {colorize(met['icon'] or met['text'], color, True)} {met['temp']}{met['temp_unit']}'
+    # top_bar += f' | {colorize(met['text'], color)} {met['temp_unit']}'
 
     # top_bar += "\033[48;2;200;10;40mProva" # 48 per lo sfondo
     with open("/tmp/launcher_top_bar", "w") as f:
@@ -122,7 +123,7 @@ def normal_mode():
         exit()
     elif selection in exec_map:
         process = subprocess.Popen(exec_map[selection], shell=True, start_new_session=True)
-        print(env)
+        # print(env)
         exit()
 
 # Window mode: Focus a window
@@ -188,7 +189,7 @@ def dashboard_mode():
         subprocess.run(exec_map[selection], shell=True)
         dashboard_mode()
 
-if False:
+if True:
     # Start system info updater thread
     threading.Thread(target=get_system_info_cycle, daemon=True).start()
 

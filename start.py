@@ -1,6 +1,9 @@
 import subprocess
-import sys
+import sys, os
 import pathlib
+
+my_env = os.environ.copy()
+my_env["LIBGL_ALWAYS_SOFTWARE"] = "1"
 
 def main():
     # Launch Alacritty with the --print-events flag
@@ -8,7 +11,8 @@ def main():
         ['alacritty', '-T', 'alacritty launcher', '--print-events', '-e', 'python', str(pathlib.Path(__file__).parent.resolve().joinpath('launcher.py')) ],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        text=True
+        text=True,
+        env=my_env
     )
 
     try:
